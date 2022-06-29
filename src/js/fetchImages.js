@@ -1,4 +1,4 @@
-import axios from "axios";
+//import axios from "axios";
 
 const DEFAULT_PAGE = 1;
 let page = DEFAULT_PAGE;
@@ -18,11 +18,18 @@ export const fetchImages = imageName => {
         per_page: 40,
     });
     
-    return axios.get(`https://pixabay.com/api/?${searchParams}`)
-        .then(res => res.data)
+    return fetch(`https://pixabay.com/api/?${searchParams}`)
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+            throw new Error(res.statusText);
+        })
         .then(data => {
             page += 1;
-            const images = data.hits;
-            return images;
+            return {
+                images: data.hits,
+                totalHits: data.totalHits,
+            };
         });
 };
