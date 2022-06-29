@@ -23,6 +23,7 @@ function onFormSubmit(e) {
     imageName = refs.form.elements.searchQuery.value;
 
     if (imageName === '') {
+        clearGalleryContainer();
         Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
     }
     resetPage();
