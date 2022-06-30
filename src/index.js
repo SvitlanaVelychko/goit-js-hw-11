@@ -12,6 +12,7 @@ const refs = {
     loadMoreBtn: document.querySelector('.load-more'),
 }
 let imageName = '';
+let counterImages = 0;
 
 refs.form.addEventListener('submit', onFormSubmit);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
@@ -22,27 +23,37 @@ function onFormSubmit(e) {
 
     imageName = refs.form.elements.searchQuery.value;
 
-    if (imageName === '') {
-        clearGalleryContainer();
-        Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-    }
+    // if (imageName === '') {
+    //     Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+    //     refs.loadMoreBtn.classList.remove('is-visible');
+    // }
+    
     resetPage();
     refs.loadMoreBtn.classList.remove('is-visible');
-    fetchImages(imageName).then(({images}) => {
+    fetchImages(imageName).then(({ images }) => {
         refs.imagesContainer.innerHTML = createImageCards(images);
         refs.loadMoreBtn.classList.add('is-visible');
+        counterImages = images.length;
+
+        if (images.length === 0 || imageName === '') {
+            refs.loadMoreBtn.classList.remove('is-visible');
+            Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+        }
     })
 }
 
 function onLoadMoreBtnClick() {
     fetchImages(imageName).then(({ images, totalHits }) => {
         refs.imagesContainer.insertAdjacentHTML('beforeend', createImageCards(images));
+        counterImages += images.length;
 
-        if (totalHits < 40) {
-            refs.loadMoreBtn.classList.remove('is-visible');
-            Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
-        } else {
+        if (counterImages < totalHits) {
             Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+        } else {
+            refs.loadMoreBtn.classList.remove('is-visible');
+            setTimeout(() => {
+                Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+            }, 2000);
         }
     });
 }
