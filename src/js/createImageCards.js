@@ -1,8 +1,10 @@
 export function createImageCards(images) {
     return images
-        .map(({ webformatURL, tags, likes, views, comments, downloads }) =>
+        .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) =>
             `<div class="photo-card">
-                <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+                <a class="photo-card__link" href="${largeImageURL}">
+                    <img class="photo-card__image" src="${webformatURL}" alt="${tags}" loading="lazy" />
+                </a>
                 <div class="info">
                     <p class="info-item">
                     <b>Likes</b>${likes}
