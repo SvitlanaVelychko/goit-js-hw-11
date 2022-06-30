@@ -38,6 +38,7 @@ async function onFormSubmit(e) {
             counterImages = images.length;
 
             if (images.length === 0 || imageName === '') {
+                clearGalleryContainer();
                 refs.loadMoreBtn.classList.remove('is-visible');
                 Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
             }
