@@ -26,22 +26,21 @@ async function onFormSubmit(e) {
     e.preventDefault();
     clearGalleryContainer();
 
-    imageName = refs.form.elements.searchQuery.value;
+    imageName = refs.form.elements.searchQuery.value.trim();
 
     try {
     resetPage();
     refs.loadMoreBtn.classList.remove('is-visible');
         await fetchImages(imageName).then(({ images, totalHits }) => {
-            refs.imagesContainer.innerHTML = createImageCards(images);
-            lightbox.refresh();
-            refs.loadMoreBtn.classList.add('is-visible');
-            counterImages = images.length;
-
             if (images.length === 0 || imageName === '') {
                 clearGalleryContainer();
                 refs.loadMoreBtn.classList.remove('is-visible');
                 Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
             } else {
+                refs.imagesContainer.innerHTML = createImageCards(images);
+                lightbox.refresh();
+                refs.loadMoreBtn.classList.add('is-visible');
+                counterImages = images.length;
                 Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
             }
         });
