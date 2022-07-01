@@ -31,7 +31,7 @@ async function onFormSubmit(e) {
     try {
     resetPage();
     refs.loadMoreBtn.classList.remove('is-visible');
-        await fetchImages(imageName).then(({ images }) => {
+        await fetchImages(imageName).then(({ images, totalHits }) => {
             refs.imagesContainer.innerHTML = createImageCards(images);
             lightbox.refresh();
             refs.loadMoreBtn.classList.add('is-visible');
@@ -41,6 +41,8 @@ async function onFormSubmit(e) {
                 clearGalleryContainer();
                 refs.loadMoreBtn.classList.remove('is-visible');
                 Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+            } else {
+                Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
             }
         });
     } catch (error) {
@@ -55,9 +57,7 @@ async function onLoadMoreBtnClick() {
             lightbox.refresh();
             counterImages += images.length;
 
-            if (counterImages < totalHits) {
-                Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
-            } else {
+            if (counterImages > totalHits) {
                 refs.loadMoreBtn.classList.remove('is-visible');
                 setTimeout(() => {
                     Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
